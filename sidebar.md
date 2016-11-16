@@ -4,8 +4,12 @@
 
 授权：<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">署名-非商用许可证</a>
 
-## 目录
+## Hadoop基础
 0. [前言](#README)
+0. [环境安装](#docs/install)
+
+## 读书笔记
+- [《Hadoop实战》](#docs/book_hia)
 
 ## 附录 
 - [源码](https://github.com/mumingv/gitreposity)

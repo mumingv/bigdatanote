@@ -317,8 +317,8 @@ This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2
 
 ### 参考资料
 
-- [安装Hadoop]（http://www.powerxing.com/install-hadoop-in-centos/)("安装Java环境"一节不用看，不推荐使用openjdk。）
-- [官方网站](http://hadoop.apache.org/)
+- [安装Hadoop](http://www.powerxing.com/install-hadoop-in-centos/)("安装Java环境"一节不用看，不推荐使用openjdk）
+- [Hadoop官方网站](http://hadoop.apache.org/)
 - [厦门大学数据库实验室](http://dblab.xmu.edu.cn/)(厦门大学有关大数据的研究资料和教学视频)
 - [设置机器间免密登陆](http://blog.csdn.net/dongwuming/article/details/9705595)
 

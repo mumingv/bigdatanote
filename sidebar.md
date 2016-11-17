@@ -12,7 +12,7 @@
 - [《Hadoop实战》](#docs/book_hia)
 
 ## 附录 
-- [源码](https://github.com/mumingv/gitreposity)
-- [修订历史](https://github.com/mumingv/gitreposity/commits/master)
-- [反馈意见](https://github.com/mumingv/gitreposity/issues)
+- [源码](https://github.com/mumingv/bigdatanote)
+- [修订历史](https://github.com/mumingv/bigdatanote/commits/master)
+- [反馈意见](https://github.com/mumingv/bigdatanote/issues)
 

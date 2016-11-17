@@ -52,7 +52,7 @@ MapReduce是一个数据处理模型，其中的数据处理原语称为`mapper`
 ## 运行第一个程序（用Hadoop统计单词）
 
 这里要运行一个简单的Hadoop统计单词程序，需要先安装JDK和Hadoop，安装步骤请参考：
-1. [安装JDK](#docs/install#安装Java)
+1. [安装JDK](#docs/install#安装JDK)
 2. [安装Hadoop](#docs/install#安装Hadoop)
 
 **说明**：这里的Hadoop只使用了一台机器，即：非分布式Hadoop，仅仅用于执行一些简单的Demo程序。
@@ -242,5 +242,5 @@ Hadoop基于Google的两篇论文实现，分别是：
 5. [MapReduce Simplified Data Processing on Large Clusters 中文版](http://blog.bizcloudsoft.com/wp-content/uploads/Google-MapReduce%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf)
 6. [Bigtable: A Distributed Storage System for Structured Data](http://static.googleusercontent.com/media/research.google.com/zh-CN//archive/bigtable-osdi06.pdf)
 7. [Bigtable: A Distributed Storage System for Structured Data中文版](http://blog.bizcloudsoft.com/wp-content/uploads/Google-Bigtable%E4%B8%AD%E6%96%87%E7%89%88_1.0.pdf)
-
+8. [使用命令行编译打包运行自己的MapReduce程序](http://www.powerxing.com/hadoop-build-project-by-shell/)
 

@@ -79,7 +79,7 @@ Do as I say, not as I do.
 
 <font color="red">**重要说明**：`/usr/local/hadoop/`目录下不能有`output`目录，因为Hadoop在执行过程中会动态创建该目录，如果已经存在了，Hadoop程序就会执行失败。</font>
 
-[可选]如果存在`output`目录，则在运行Hadoop程序执行，需要先将其删除或者改名。
+【可选】如果存在`output`目录，则在运行Hadoop的mapreduce程序之前，需要先将其删除或者改名。
 
 ```bash
 [hadoop@CentOS hadoop]$ rm -rf output

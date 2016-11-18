@@ -118,13 +118,13 @@ jdk.x86_64                         2000:1.7.0_80-fcs                   installed
 
 在系统配置文件`/etc/profile`的末尾增加如下环境变量
 
-```
+```bash
 # JAVA环境变量
 JAVA_HOME=/usr/java/jdk1.7.0_80
 JRE_HOME=/usr/java/jdk1.7.0_80/jre
-CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib 
+CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib 
 PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin 
-export JAVA_HOME JRE_HOME CLASS_PATH PATH
+export JAVA_HOME JRE_HOME CLASSPATH PATH
 ```
 
 激活环境变量
@@ -314,7 +314,19 @@ From source with checksum df7537a4faa4658983d397abf4514320
 This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.5.2.jar
 ```
 
-4.一个小例子
+4.设置环境变量
+
+在系统配置文件`/etc/profile`的末尾增加如下环境变量
+
+```bash
+# Hadoop环境变量
+HADOOP_HOME=/usr/local/hadoop
+CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath):$CLASSPATH
+PATH=$PATH:$HADOOP_HOME/bin
+export HADOOP_HOME CLASSPATH PATH
+```
+
+5.一个小例子
 
 Hadoop安装成功后，就可以试试下面这个示例体验一下了。
 

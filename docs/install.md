@@ -1,6 +1,6 @@
 # 环境安装
 
-**说明**：软件安装使用的系统是CentOS 7.0(Aliyun ECS)，其他Linux环境的安装方法请查阅相关文档，本文不做说明。
+**说明**：软件安装使用的系统是CentOS 7.0(Aliyun ECS)，其他Linux环境的安装方法请查阅相关文档，可能略有差异，本文不做说明。
 
 ## 安装JDK
 
@@ -313,6 +313,12 @@ Compiled with protoc 2.5.0
 From source with checksum df7537a4faa4658983d397abf4514320
 This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2.5.2.jar
 ```
+
+4.一个小例子
+
+Hadoop安装成功后，就可以试试下面这个示例体验一下了。
+
+示例：[用Hadoop统计单词](#docs/hia_01#运行第一个程序（用Hadoop统计单词）)。
 
 
 ### 参考资料

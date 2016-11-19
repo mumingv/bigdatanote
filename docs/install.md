@@ -156,7 +156,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 24.80-b11, mixed mode)
 
 ## 安装Hadoop
 
-### 安装步骤
+### 单机模式安装步骤
 
 #### 创建Hadoop用户
 
@@ -326,11 +326,288 @@ PATH=$PATH:$HADOOP_HOME/bin
 export HADOOP_HOME CLASSPATH PATH
 ```
 
+设置好环境变量后，执行如下命令使配置生效。
+```bash
+[hadoop@CentOS ~]$ source /etc/profile
+```
+
 5.一个小例子
 
-Hadoop安装成功后，就可以试试下面这个示例体验一下了。
+Hadoop单机模式安装成功后，就可以试试下面这个示例体验一下了。
 
 示例：[用Hadoop统计单词](#docs/hia_01#运行第一个程序（用Hadoop统计单词）)。
+
+
+### 伪分布模式安装步骤
+
+*<font color="red">说明：在此之前，请先确保已经完成了[单机模式的安装](#docs/install#单机模式安装步骤)。</font>另外，本节所涉及的所有命令均使用hadoop用户执行。*
+
+#### 设置环境变量
+
+在系统配置文件`/etc/profile`的末尾增加如下环境变量
+
+```bash
+# Hadoop环境变量（伪分布式）
+HADOOP_INSTALL=$HADOOP_HOME
+HADOOP_MAPRED_HOME=$HADOOP_HOME
+HADOOP_COMMON_HOME=$HADOOP_HOME
+HADOOP_HDFS_HOME=$HADOOP_HOME
+YARN_HOME=$HADOOP_HOME
+HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+PATH=$PATH:$HADOOP_HOME/sbin
+export HADOOP_INSTALL HADOOP_MAPRED_HOME HADOOP_COMMON_HOME
+export HADOOP_HDFS_HOME YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR PATH
+```
+
+设置好环境变量后，执行如下命令使配置生效。
+```bash
+[hadoop@CentOS ~]$ source /etc/profile
+```
+
+
+#### 修改Hadoop配置
+
+*说明：本节所涉及的配置均在`/usr/local/hadoop/etc/hadoop`目录下。*
+
+1.修改Hadoop中的环境变量配置
+
+将文件`hadoop-env.sh`中的
+```
+export JAVA_HOME=${JAVA_HOME}
+```
+修改为
+```
+export JAVA_HOME=/usr/java/jdk1.7.0_80
+```
+
+*说明：如果不修改JAVA_HOME的话，在启动NameNode和DataNode的时候，会报如下错误导致启动不成功。*
+
+```bash
+[hadoop@CentOS hadoop]$ ./sbin/start-dfs.sh
+16/11/19 16:47:58 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Starting namenodes on [localhost]
+localhost: Error: JAVA_HOME is not set and could not be found.
+localhost: Error: JAVA_HOME is not set and could not be found.
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: Error: JAVA_HOME is not set and could not be found.
+16/11/19 16:48:04 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+```
+
+2.修改配置文件
+
+将文件`core-site.xml`中的
+```
+<configuration>
+</configuration>
+```
+修改为
+```
+<configuration>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>file:/usr/local/hadoop/tmp</value>
+        <description>A base for other temporary directories.</description>
+    </property>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+```
+
+将文件`hdfs-site.xml`中的
+```
+<configuration>
+</configuration>
+```
+修改为
+```
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:/usr/local/hadoop/tmp/dfs/name</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:/usr/local/hadoop/tmp/dfs/data</value>
+    </property>
+</configuration>
+```
+
+3.格式化NameNode
+
+执行命令
+
+```bash
+[hadoop@CentOS ~]$ cd /usr/local/hadoop/
+[hadoop@CentOS hadoop]$ ./bin/hdfs namenode -format
+```
+
+输出结果中出现`common.Storage: Storage directory /usr/local/hadoop/tmp/dfs/name has been successfully`和`util.ExitUtil: Exiting with status 0`，则表明NameNode格式化成功。命令的具体输出如下：
+
+```
+16/11/19 17:25:01 INFO namenode.NameNode: STARTUP_MSG: 
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = <hostname>/172.17.0.1
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 2.5.2
+STARTUP_MSG:   classpath = /usr/local/hadoop/etc/hadoop:/usr/local/hadoop/share/hadoop/common/lib/commons-logging-1.1.3.jar:...
+STARTUP_MSG:   build = https://git-wip-us.apache.org/repos/asf/hadoop.git -r cc72e9b000545b86b75a61f4835eb86d57bfafc0; compiled by 'jenkins' on 2014-11-14T23:45Z
+STARTUP_MSG:   java = 1.7.0_80
+************************************************************/
+16/11/19 17:25:01 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
+16/11/19 17:25:01 INFO namenode.NameNode: createNameNode [-format]
+16/11/19 17:25:01 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Formatting using clusterid: CID-c0c25db2-a5aa-48b6-8d28-1cd6cccc4434
+16/11/19 17:25:02 INFO namenode.FSNamesystem: fsLock is fair:true
+16/11/19 17:25:02 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit=1000
+16/11/19 17:25:02 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: The block deletion will start around 2016 Nov 19 17:25:02
+16/11/19 17:25:02 INFO util.GSet: Computing capacity for map BlocksMap
+16/11/19 17:25:02 INFO util.GSet: VM type       = 64-bit
+16/11/19 17:25:02 INFO util.GSet: 2.0% max memory 966.7 MB = 19.3 MB
+16/11/19 17:25:02 INFO util.GSet: capacity      = 2^21 = 2097152 entries
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: dfs.block.access.token.enable=false
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: defaultReplication         = 1
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: maxReplication             = 512
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: minReplication             = 1
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: maxReplicationStreams      = 2
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: shouldCheckForEnoughRacks  = false
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: replicationRecheckInterval = 3000
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: encryptDataTransfer        = false
+16/11/19 17:25:02 INFO blockmanagement.BlockManager: maxNumBlocksToLog          = 1000
+16/11/19 17:25:02 INFO namenode.FSNamesystem: fsOwner             = hadoop (auth:SIMPLE)
+16/11/19 17:25:02 INFO namenode.FSNamesystem: supergroup          = supergroup
+16/11/19 17:25:02 INFO namenode.FSNamesystem: isPermissionEnabled = true
+16/11/19 17:25:02 INFO namenode.FSNamesystem: HA Enabled: false
+16/11/19 17:25:02 INFO namenode.FSNamesystem: Append Enabled: true
+16/11/19 17:25:03 INFO util.GSet: Computing capacity for map INodeMap
+16/11/19 17:25:03 INFO util.GSet: VM type       = 64-bit
+16/11/19 17:25:03 INFO util.GSet: 1.0% max memory 966.7 MB = 9.7 MB
+16/11/19 17:25:03 INFO util.GSet: capacity      = 2^20 = 1048576 entries
+16/11/19 17:25:03 INFO namenode.NameNode: Caching file names occuring more than 10 times
+16/11/19 17:25:03 INFO util.GSet: Computing capacity for map cachedBlocks
+16/11/19 17:25:03 INFO util.GSet: VM type       = 64-bit
+16/11/19 17:25:03 INFO util.GSet: 0.25% max memory 966.7 MB = 2.4 MB
+16/11/19 17:25:03 INFO util.GSet: capacity      = 2^18 = 262144 entries
+16/11/19 17:25:03 INFO namenode.FSNamesystem: dfs.namenode.safemode.threshold-pct = 0.9990000128746033
+16/11/19 17:25:03 INFO namenode.FSNamesystem: dfs.namenode.safemode.min.datanodes = 0
+16/11/19 17:25:03 INFO namenode.FSNamesystem: dfs.namenode.safemode.extension     = 30000
+16/11/19 17:25:03 INFO namenode.FSNamesystem: Retry cache on namenode is enabled
+16/11/19 17:25:03 INFO namenode.FSNamesystem: Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
+16/11/19 17:25:03 INFO util.GSet: Computing capacity for map NameNodeRetryCache
+16/11/19 17:25:03 INFO util.GSet: VM type       = 64-bit
+16/11/19 17:25:03 INFO util.GSet: 0.029999999329447746% max memory 966.7 MB = 297.0 KB
+16/11/19 17:25:03 INFO util.GSet: capacity      = 2^15 = 32768 entries
+16/11/19 17:25:03 INFO namenode.NNConf: ACLs enabled? false
+16/11/19 17:25:03 INFO namenode.NNConf: XAttrs enabled? true
+16/11/19 17:25:03 INFO namenode.NNConf: Maximum size of an xattr: 16384
+16/11/19 17:25:03 INFO namenode.FSImage: Allocated new BlockPoolId: BP-1431225708-172.17.0.1-1479547503226
+16/11/19 17:25:03 INFO common.Storage: Storage directory /usr/local/hadoop/tmp/dfs/name has been successfully formatted.
+16/11/19 17:25:03 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid >= 0
+16/11/19 17:25:03 INFO util.ExitUtil: Exiting with status 0
+16/11/19 17:25:03 INFO namenode.NameNode: SHUTDOWN_MSG: 
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at <hostname>/172.17.0.1
+************************************************************/
+```
+
+格式化成功后会生成存放`NameNode`、`SecondaryNameNode`以及`DataNode`的目录
+```
+[hadoop@CentOS hadoop]$ ls tmp/dfs/
+data  name  namesecondary
+```
+以及存放日志的目录
+```
+[hadoop@CentOS hadoop]$ ls -1 logs/
+hadoop-hadoop-datanode-<hostname>.log
+hadoop-hadoop-datanode-<hostname>.out
+hadoop-hadoop-namenode-<hostname>.log
+hadoop-hadoop-namenode-<hostname>.out
+hadoop-hadoop-secondarynamenode-<hostname>.log
+hadoop-hadoop-secondarynamenode-<hostname>.out
+SecurityAuth-hadoop.audit
+```
+*说明：如果启动失败或者运行过程中出现问题，可以优先到logs目录下查看日志以确认问题的可能原因。*
+
+4.启动`NameNode`、`SecondaryNameNode`以及`DataNode`的守护进程
+
+执行`start-dfs.sh`脚本运行守护进程：
+
+```
+[hadoop@CentOS hadoop]$ ./sbin/start-dfs.sh          
+16/11/19 17:32:40 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Starting namenodes on [localhost]
+localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hadoop-namenode-iZ25sle0t20Z.out
+localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hadoop-datanode-iZ25sle0t20Z.out
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hadoop-secondarynamenode-iZ25sle0t20Z.out
+16/11/19 17:33:00 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+```
+
+执行`jps`命令查询进程是否启动成功，成功的话会显示各Node的名称及其对应的进程号：
+
+```
+[hadoop@CentOS hadoop]$ jps
+13321 NameNode
+13600 SecondaryNameNode
+13419 DataNode
+13705 Jps
+```
+
+*说明：`jps`命令是Java提供的工具，该命令只能查看Java的进程。当然你也可以使用Linux系统自带的命令`ps`进行查询，如下所示：*
+
+```
+[hadoop@CentOS hadoop]$ ps uxf
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+...
+hadoop   13600  2.3  6.0 1546556 113256 ?      Sl   17:53   0:05 /usr/java/jdk1.7.0_80/bin/java -Dproc_secondarynamenode -Xmx1000m -D
+hadoop   13419  2.0  4.9 1568084 92720 ?       Sl   17:53   0:04 /usr/java/jdk1.7.0_80/bin/java -Dproc_datanode -Xmx1000m -Djava.net.
+hadoop   13321  2.4  6.9 1568060 131192 ?      Sl   17:53   0:05 /usr/java/jdk1.7.0_80/bin/java -Dproc_namenode -Xmx1000m -Djava.net.
+```
+
+*说明：我们也可以通过`netstat`命令查看各个Hadoop的Java进程使用了哪些端口。*
+
+```
+[hadoop@CentOS hadoop]$ netstat -tunlp | grep java
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp  0  0 127.0.0.1:9000  0.0.0.0:*  LISTEN  13321/java          
+tcp  0  0 0.0.0.0:50070   0.0.0.0:*  LISTEN  13321/java 
+tcp  0  0 0.0.0.0:50090   0.0.0.0:*  LISTEN  13600/java          
+tcp  0  0 0.0.0.0:50010   0.0.0.0:*  LISTEN  13419/java          
+tcp  0  0 0.0.0.0:50020   0.0.0.0:*  LISTEN  13419/java          
+tcp  0  0 0.0.0.0:50075   0.0.0.0:*  LISTEN  13419/java          
+```
+*可以看到NameNode（13321）进程开了2个TCP端口（9000和50070）。SecondaryNameNode（13600）进程开了1个TCP端口（50090）。DataNode（13419）进程开了3个TCP端口（50010、50020和50075）。其中，9000端口是我们自己在core-site.xml配置文件中指定的，其他端口都是Hadoop默认指定的。*
+
+*如果你比较细心的话，会发现NameNode开的两个端口有些不太一样，一个是`127.0.0.1:9000`，另一个是却是`0.0.0.0:50070`。其中50070端口是可以通过外网进行访问的，而9000端口却不能。*
+
+*说明：你一定会想知道如何停止NameNode、SecondaryNameNode以及DataNode的守护进程，很简单，执行下面的脚本即可。*
+
+```bash
+[hadoop@CentOS hadoop]$ ./sbin/stop-dfs.sh
+```
+
+5.页面查看Hadoop系统状态
+
+在浏览器中输入`http://<IP>:50070/`即可，这里的`<IP>`是你部署Hadoop的Linux主机的IP地址。如下图所示：
+
+[![查看Hadoop系统状态](images/bigdatanote_hadoop_install.png)](images/bigdatanote_hadoop_install.png)
+
+*说明：在该页面中可以查看NameNode、DataNode的信息，以及HDFS文件和日志文件。具体细节请自行研究。*
+
+6.一个小例子
+
+Hadoop伪分布式模式安装成功后，就可以试试下面这个示例体验一下了。
+
+示例：[例子]()。
 
 
 ### 参考资料

@@ -610,7 +610,7 @@ Hadoop伪分布式模式安装成功后，就可以试试下面这个示例体�
 
 - [安装Hadoop](http://www.powerxing.com/install-hadoop-in-centos/)("安装Java环境"一节不用看，不推荐使用openjdk）
 - [Hadoop官方网站](http://hadoop.apache.org/)
+- [Hadoop-2.5.2版本官方手册](http://hadoop.apache.org/docs/r2.5.2/)
 - [厦门大学数据库实验室](http://dblab.xmu.edu.cn/)(厦门大学有关大数据的研究资料和教学视频)
 - [设置机器间免密登陆](http://blog.csdn.net/dongwuming/article/details/9705595)
-
 

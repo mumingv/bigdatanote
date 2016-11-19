@@ -354,9 +354,10 @@ HADOOP_COMMON_HOME=$HADOOP_HOME
 HADOOP_HDFS_HOME=$HADOOP_HOME
 YARN_HOME=$HADOOP_HOME
 HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=/usr/local/hadoop/lib/native"
 PATH=$PATH:$HADOOP_HOME/sbin
-export HADOOP_INSTALL HADOOP_MAPRED_HOME HADOOP_COMMON_HOME
-export HADOOP_HDFS_HOME YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR PATH
+export HADOOP_INSTALL HADOOP_MAPRED_HOME HADOOP_COMMON_HOME HADOOP_HDFS_HOME
+export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS PATH
 ```
 
 设置好环境变量后，执行如下命令使配置生效。
@@ -384,13 +385,11 @@ export JAVA_HOME=/usr/java/jdk1.7.0_80
 
 ```bash
 [hadoop@CentOS hadoop]$ ./sbin/start-dfs.sh
-16/11/19 16:47:58 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Starting namenodes on [localhost]
 localhost: Error: JAVA_HOME is not set and could not be found.
 localhost: Error: JAVA_HOME is not set and could not be found.
 Starting secondary namenodes [0.0.0.0]
 0.0.0.0: Error: JAVA_HOME is not set and could not be found.
-16/11/19 16:48:04 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 ```
 
 2.修改配置文件
@@ -462,7 +461,6 @@ STARTUP_MSG:   java = 1.7.0_80
 ************************************************************/
 16/11/19 17:25:01 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
 16/11/19 17:25:01 INFO namenode.NameNode: createNameNode [-format]
-16/11/19 17:25:01 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Formatting using clusterid: CID-c0c25db2-a5aa-48b6-8d28-1cd6cccc4434
 16/11/19 17:25:02 INFO namenode.FSNamesystem: fsLock is fair:true
 16/11/19 17:25:02 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit=1000
@@ -542,13 +540,11 @@ SecurityAuth-hadoop.audit
 
 ```
 [hadoop@CentOS hadoop]$ ./sbin/start-dfs.sh          
-16/11/19 17:32:40 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 Starting namenodes on [localhost]
 localhost: starting namenode, logging to /usr/local/hadoop/logs/hadoop-hadoop-namenode-iZ25sle0t20Z.out
 localhost: starting datanode, logging to /usr/local/hadoop/logs/hadoop-hadoop-datanode-iZ25sle0t20Z.out
 Starting secondary namenodes [0.0.0.0]
 0.0.0.0: starting secondarynamenode, logging to /usr/local/hadoop/logs/hadoop-hadoop-secondarynamenode-iZ25sle0t20Z.out
-16/11/19 17:33:00 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 ```
 
 执行`jps`命令查询进程是否启动成功，成功的话会显示各Node的名称及其对应的进程号：

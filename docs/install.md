@@ -322,7 +322,7 @@ This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2
 # Hadoop环境变量
 HADOOP_HOME=/usr/local/hadoop
 CLASSPATH=$($HADOOP_HOME/bin/hadoop classpath):$CLASSPATH
-PATH=$PATH:$HADOOP_HOME/bin
+PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 export HADOOP_HOME CLASSPATH PATH
 ```
 
@@ -354,10 +354,9 @@ HADOOP_COMMON_HOME=$HADOOP_HOME
 HADOOP_HDFS_HOME=$HADOOP_HOME
 YARN_HOME=$HADOOP_HOME
 HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
-HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=/usr/local/hadoop/lib/native"
-PATH=$PATH:$HADOOP_HOME/sbin
+HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_COMMON_LIB_NATIVE_DIR"
 export HADOOP_INSTALL HADOOP_MAPRED_HOME HADOOP_COMMON_HOME HADOOP_HDFS_HOME
-export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS PATH
+export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS
 ```
 
 设置好环境变量后，执行如下命令使配置生效。
@@ -603,7 +602,7 @@ tcp  0  0 0.0.0.0:50075   0.0.0.0:*  LISTEN  13419/java
 
 Hadoop伪分布式模式安装成功后，就可以试试下面这个示例体验一下了。
 
-示例：[例子]()。
+示例：[用Hadoop统计单词（伪分布模式）](#docs/hia_wordcount_pseudo)。
 
 
 ### 参考资料

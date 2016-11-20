@@ -10,6 +10,8 @@
 
 ### 本地（单机）模式
 
+示例：[用Hadoop统计单词（单机模式）](#docs/hia_wordcount_standalone)。
+
 
 ### 伪分布模式
 

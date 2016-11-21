@@ -340,6 +340,8 @@ Hadoop单机模式安装成功后，就可以试试下面这个示例体验一�
 
 ### 伪分布模式安装步骤
 
+**如果您有多台机器/虚拟机，那么推荐您直接进行[全分布模式的安装](#docs/install#全分布模式安装步骤)。**
+
 *<font color="red">说明：在此之前，请先确保已经完成了[单机模式的安装](#docs/install#单机模式安装步骤)。</font>另外，本节所涉及的所有命令均使用hadoop用户执行。*
 
 #### 设置环境变量
@@ -347,7 +349,7 @@ Hadoop单机模式安装成功后，就可以试试下面这个示例体验一�
 在系统配置文件`/etc/profile`的末尾增加如下环境变量
 
 ```bash
-# Hadoop环境变量（伪分布式）
+# Hadoop环境变量（分布式）
 HADOOP_INSTALL=$HADOOP_HOME
 HADOOP_MAPRED_HOME=$HADOOP_HOME
 HADOOP_COMMON_HOME=$HADOOP_HOME
@@ -611,6 +613,30 @@ Hadoop伪分布式模式安装成功后，就可以试试下面这个示例体�
 
 *本示例使用两台机器作为集群环境，一个作为master节点（IP：172.0.0.1），另一个作为slave节点（IP：172.17.196.192）。*
 
+#### 设置环境变量
+
+<font color="red">说明：如果您已经在伪分布模式安装的时候设置过，则跳过此步骤，无需重复设置。</font>
+
+在系统配置文件`/etc/profile`的末尾增加如下环境变量
+
+```bash
+# Hadoop环境变量（分布式）
+HADOOP_INSTALL=$HADOOP_HOME
+HADOOP_MAPRED_HOME=$HADOOP_HOME
+HADOOP_COMMON_HOME=$HADOOP_HOME
+HADOOP_HDFS_HOME=$HADOOP_HOME
+YARN_HOME=$HADOOP_HOME
+HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+HADOOP_OPTS="$HADOOP_OPTS -Djava.library.path=$HADOOP_COMMON_LIB_NATIVE_DIR"
+export HADOOP_INSTALL HADOOP_MAPRED_HOME HADOOP_COMMON_HOME HADOOP_HDFS_HOME
+export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS
+```
+
+设置好环境变量后，执行如下命令使配置生效。
+```bash
+[hadoop@CentOS ~]$ source /etc/profile
+```
+
 #### 修改主机名
 
 主机名称保存在配置文件`/etc/hostname`中，使用vim进行修改。
@@ -673,13 +699,13 @@ rtt min/avg/max/mdev = 1.314/3.178/6.650/2.457 ms
 
 #### 设置SSH无密码登陆
 
-设置方法参考：[设置机器间免密登陆](#docs/install#设置机器间免密登陆)
+设置方法参考：[设置机器间免密登陆](#docs/install#设置机器间免密登陆)。
 
 <font color="red">说明：需要在任意两个节点之间都设置SSH无密码登陆。</font>
 
 *示例：从master登陆slave1节点。*
 
-``bash
+```bash
 [hadoop@master hadoop]$ ssh 172.17.196.193
 Last login: Mon Nov 21 11:54:40 2016 from 172.17.0.1
 [hadoop@slave1 ~]$

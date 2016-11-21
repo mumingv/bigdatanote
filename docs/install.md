@@ -831,7 +831,9 @@ root@slave1 password:  # 输入slave1节点的root密码
 
 在slave1节点执行`chown`命令：
 
+```bash
 [hadoop@slave1 ~]$ sudo chown -R hadoop:hadoop /usr/local/hadoop
+```
 
 
 #### 格式化NameNode

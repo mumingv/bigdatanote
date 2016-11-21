@@ -605,6 +605,394 @@ Hadoop伪分布式模式安装成功后，就可以试试下面这个示例体�
 示例：[用Hadoop统计单词（伪分布模式）](#docs/hia_wordcount_pseudo)。
 
 
+### 全分布模式安装步骤
+
+*<font color="red">说明：在此之前，请先确保已经完成了[单机模式的安装](#docs/install#单机模式安装步骤)。</font>另外，本节所涉及的所有命令均使用hadoop用户执行。*
+
+*本示例使用两台机器作为集群环境，一个作为master节点（IP：172.0.0.1），另一个作为slave节点（IP：172.17.196.192）。*
+
+#### 修改主机名
+
+主机名称保存在配置文件`/etc/hostname`中，使用vim进行修改。
+
+```bash
+[hadoop@CentOS hadoop]$ sudo vim /etc/hostname
+```
+
+集群中所有节点的主机名称均需要修改，将master节点的主机名改为`master`，slave节点的主机名改为`slave1``slave2`等。
+
+*说明：修改主机名之后需要执行重启机器才能生效。重启后在进入系统，就会提示下面这个样子了。*
+
+```bash
+[hadoop@master hadoop]$
+```
+
+
+#### 增加IP地址到主机名的映射
+
+IP地址到主机名的映射关系保存在配置文件`/etc/hosts`中，使用vim进行修改。以master节点为例：
+
+```bash
+[hadoop@master hadoop]$ sudo vim /etc/hosts
+```
+
+*说明：对于CentOS 7系统，修改后的结果如下。前两行是系统自带的，无需修改；在后面新增master节点以及各slave节点的映射关系即可。*
+
+```bash
+[hadoop@master hadoop]$ cat /etc/hosts
+127.0.0.1 localhost
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+172.17.0.1 master
+172.17.196.193 slave1
+```
+
+<font color="red">集群中其他所有节点的hosts文件均需要修改，增加的内容和master节点是完全一样的。比如：slave1节点上的hosts文件内容为：</font>
+
+```bash
+[hadoop@slave1 ~]$ cat /etc/hosts
+127.0.0.1 localhost
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+172.17.0.1 master
+172.17.196.193 slave1
+```
+
+增加了映射之后，就可以直接使用对方的主机名来通信了。比如：在master节点上ping节点slave1。
+
+```bash
+[hadoop@master hadoop]$ ping slave1 -c 3
+PING slave1 (172.17.196.193) 56(84) bytes of data.
+64 bytes from slave1 (172.17.196.193): icmp_seq=1 ttl=64 time=6.65 ms
+64 bytes from slave1 (172.17.196.193): icmp_seq=2 ttl=64 time=1.31 ms
+64 bytes from slave1 (172.17.196.193): icmp_seq=3 ttl=64 time=1.57 ms
+
+--- slave1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 1.314/3.178/6.650/2.457 ms
+```
+
+
+#### 设置SSH无密码登陆
+
+设置方法参考：[设置机器间免密登陆](#docs/install#设置机器间免密登陆)
+
+<font color="red">说明：需要在任意两个节点之间都设置SSH无密码登陆。</font>
+
+*示例：从master登陆slave1节点。*
+
+``bash
+[hadoop@master hadoop]$ ssh 172.17.196.193
+Last login: Mon Nov 21 11:54:40 2016 from 172.17.0.1
+[hadoop@slave1 ~]$
+```
+
+
+#### 修改Hadoop配置
+
+*说明：本节所涉及的配置均在`/usr/local/hadoop/etc/hadoop`目录下。*
+
+1.修改Hadoop中的环境变量配置
+
+将文件`hadoop-env.sh`中的
+```
+export JAVA_HOME=${JAVA_HOME}
+```
+修改为
+```
+export JAVA_HOME=/usr/java/jdk1.7.0_80
+```
+
+*说明：如果不修改JAVA_HOME的话，在启动NameNode和DataNode的时候，会报如下错误导致启动不成功。*
+
+```bash
+[hadoop@master hadoop]$ ./sbin/start-dfs.sh
+Starting namenodes on [localhost]
+localhost: Error: JAVA_HOME is not set and could not be found.
+localhost: Error: JAVA_HOME is not set and could not be found.
+Starting secondary namenodes [0.0.0.0]
+0.0.0.0: Error: JAVA_HOME is not set and could not be found.
+```
+
+2.修改配置文件
+
+将文件`slaves`中的
+```
+localhost
+```
+修改为
+```
+slave1
+```
+<font color="red">本示例中只有一个slave节点，如果有多个salve节点的话，每个slave节点的主机名各占一行。</font>
+
+将文件`core-site.xml`中的
+```
+<configuration>
+</configuration>
+```
+修改为
+```
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://master:9000</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>file:/usr/local/hadoop/tmp</value>
+        <description>Abase for other temporary directories.</description>
+    </property>
+</configuration>
+```
+
+将文件`hdfs-site.xml`中的
+```
+<configuration>
+</configuration>
+```
+修改为
+```
+nfiguration>
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>master:50090</value>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:/usr/local/hadoop/tmp/dfs/name</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:/usr/local/hadoop/tmp/dfs/data</value>
+    </property>
+</configuration>
+```
+
+将文件`mapred-site.xml.template`改名为`mapred-site.xml`，然后将其中的
+```
+<configuration>
+</configuration>
+```
+修改为
+```
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>master:10020</value>
+    </property>
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>master:19888</value>
+    </property>
+</configuration>
+```
+
+将文件`yarn-site.xml`中的
+```
+<configuration>
+</configuration>
+```
+修改为
+```
+<configuration>
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>master</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+</configuration>
+```
+
+
+#### 同步Hadoop目录
+
+*如果之前部署过伪分布模式Hadoop，需要先将之前的目录删除掉。在master执行：*
+
+```bash
+[hadoop@master hadoop]$ rm -rf tmp/ logs/
+```
+
+在master节点执行`scp`命令，将hadoop目录拷贝到各个slave节点，这里以slave1节点为例。
+
+```bash
+[hadoop@master hadoop]$ scp -r -p /usr/local/hadoop/ root@slave1:/usr/local/
+root@slave1 password:  # 输入slave1节点的root密码
+```
+
+在slave1节点执行`chown`命令：
+
+[hadoop@slave1 ~]$ sudo chown -R hadoop:hadoop /usr/local/hadoop
+
+
+#### 格式化NameNode
+
+在master节点上执行
+
+```bash
+[hadoop@CentOS ~]$ cd /usr/local/hadoop/
+[hadoop@CentOS hadoop]$ ./bin/hdfs namenode -format
+```
+
+输出结果中出现`common.Storage: Storage directory /usr/local/hadoop/tmp/dfs/name has been successfully formatted`和`util.ExitUtil: Exiting with status 0`，则表明NameNode格式化成功。命令的具体输出如下：
+
+```
+[hadoop@master hadoop]$ hdfs namenode -format
+16/11/21 13:37:08 INFO namenode.NameNode: STARTUP_MSG: 
+/************************************************************
+STARTUP_MSG: Starting NameNode
+STARTUP_MSG:   host = master/172.17.0.1
+STARTUP_MSG:   args = [-format]
+STARTUP_MSG:   version = 2.5.2
+STARTUP_MSG:   classpath = /usr/local/hadoop/etc/hadoop:/usr/local/hadoop/share/hadoop/common/lib/commons-logging-1.1.3.jar:...
+STARTUP_MSG:   build = https://git-wip-us.apache.org/repos/asf/hadoop.git -r cc72e9b000545b86b75a61f4835eb86d57bfafc0; compiled by 'jenkins' on 2014-11-14T23:45Z
+STARTUP_MSG:   java = 1.7.0_80
+************************************************************/
+16/11/21 13:37:08 INFO namenode.NameNode: registered UNIX signal handlers for [TERM, HUP, INT]
+16/11/21 13:37:08 INFO namenode.NameNode: createNameNode [-format]
+Formatting using clusterid: CID-98ff7b1d-e7e6-44ea-ae61-1ec43d744d6a
+16/11/21 13:37:10 INFO namenode.FSNamesystem: fsLock is fair:true
+16/11/21 13:37:10 INFO blockmanagement.DatanodeManager: dfs.block.invalidate.limit=1000
+16/11/21 13:37:10 INFO blockmanagement.DatanodeManager: dfs.namenode.datanode.registration.ip-hostname-check=true
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: dfs.namenode.startup.delay.block.deletion.sec is set to 000:00:00:00.000
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: The block deletion will start around 2016 Nov 21 13:37:10
+16/11/21 13:37:10 INFO util.GSet: Computing capacity for map BlocksMap
+16/11/21 13:37:10 INFO util.GSet: VM type       = 64-bit
+16/11/21 13:37:10 INFO util.GSet: 2.0% max memory 966.7 MB = 19.3 MB
+16/11/21 13:37:10 INFO util.GSet: capacity      = 2^21 = 2097152 entries
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: dfs.block.access.token.enable=false
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: defaultReplication         = 1
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: maxReplication             = 512
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: minReplication             = 1
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: maxReplicationStreams      = 2
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: shouldCheckForEnoughRacks  = false
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: replicationRecheckInterval = 3000
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: encryptDataTransfer        = false
+16/11/21 13:37:10 INFO blockmanagement.BlockManager: maxNumBlocksToLog          = 1000
+16/11/21 13:37:11 INFO namenode.FSNamesystem: fsOwner             = hadoop (auth:SIMPLE)
+16/11/21 13:37:11 INFO namenode.FSNamesystem: supergroup          = supergroup
+16/11/21 13:37:11 INFO namenode.FSNamesystem: isPermissionEnabled = true
+16/11/21 13:37:11 INFO namenode.FSNamesystem: HA Enabled: false
+16/11/21 13:37:11 INFO namenode.FSNamesystem: Append Enabled: true
+16/11/21 13:37:11 INFO util.GSet: Computing capacity for map INodeMap
+16/11/21 13:37:11 INFO util.GSet: VM type       = 64-bit
+16/11/21 13:37:11 INFO util.GSet: 1.0% max memory 966.7 MB = 9.7 MB
+16/11/21 13:37:11 INFO util.GSet: capacity      = 2^20 = 1048576 entries
+16/11/21 13:37:11 INFO namenode.NameNode: Caching file names occuring more than 10 times
+16/11/21 13:37:11 INFO util.GSet: Computing capacity for map cachedBlocks
+16/11/21 13:37:11 INFO util.GSet: VM type       = 64-bit
+16/11/21 13:37:11 INFO util.GSet: 0.25% max memory 966.7 MB = 2.4 MB
+16/11/21 13:37:11 INFO util.GSet: capacity      = 2^18 = 262144 entries
+16/11/21 13:37:11 INFO namenode.FSNamesystem: dfs.namenode.safemode.threshold-pct = 0.9990000128746033
+16/11/21 13:37:11 INFO namenode.FSNamesystem: dfs.namenode.safemode.min.datanodes = 0
+16/11/21 13:37:11 INFO namenode.FSNamesystem: dfs.namenode.safemode.extension     = 30000
+16/11/21 13:37:11 INFO namenode.FSNamesystem: Retry cache on namenode is enabled
+16/11/21 13:37:11 INFO namenode.FSNamesystem: Retry cache will use 0.03 of total heap and retry cache entry expiry time is 600000 millis
+16/11/21 13:37:11 INFO util.GSet: Computing capacity for map NameNodeRetryCache
+16/11/21 13:37:11 INFO util.GSet: VM type       = 64-bit
+16/11/21 13:37:11 INFO util.GSet: 0.029999999329447746% max memory 966.7 MB = 297.0 KB
+16/11/21 13:37:11 INFO util.GSet: capacity      = 2^15 = 32768 entries
+16/11/21 13:37:11 INFO namenode.NNConf: ACLs enabled? false
+16/11/21 13:37:11 INFO namenode.NNConf: XAttrs enabled? true
+16/11/21 13:37:11 INFO namenode.NNConf: Maximum size of an xattr: 16384
+16/11/21 13:37:11 INFO namenode.FSImage: Allocated new BlockPoolId: BP-29198037-172.17.0.1-1479706631734
+16/11/21 13:37:11 INFO common.Storage: Storage directory /usr/local/hadoop/tmp/dfs/name has been successfully formatted.
+16/11/21 13:37:12 INFO namenode.NNStorageRetentionManager: Going to retain 1 images with txid >= 0
+16/11/21 13:37:12 INFO util.ExitUtil: Exiting with status 0
+16/11/21 13:37:12 INFO namenode.NameNode: SHUTDOWN_MSG: 
+/************************************************************
+SHUTDOWN_MSG: Shutting down NameNode at master/172.17.0.1
+************************************************************/
+```
+
+格式化成功后会生成存放`NameNode`、`SecondaryNameNode`以及`DataNode`的目录
+```
+[hadoop@CentOS hadoop]$ ls tmp/dfs/
+data  name  namesecondary
+```
+以及存放日志的目录
+```
+[hadoop@CentOS hadoop]$ ls -1 logs/
+hadoop-hadoop-datanode-<hostname>.log
+hadoop-hadoop-datanode-<hostname>.out
+hadoop-hadoop-namenode-<hostname>.log
+hadoop-hadoop-namenode-<hostname>.out
+hadoop-hadoop-secondarynamenode-<hostname>.log
+hadoop-hadoop-secondarynamenode-<hostname>.out
+SecurityAuth-hadoop.audit
+```
+*说明：如果启动失败或者运行过程中出现问题，可以优先到logs目录下查看日志以确认问题的可能原因。*
+
+4.启动Hadoop集群
+
+在master节点上执行
+
+```bash
+[hadoop@master hadoop]$ start-dfs.sh
+[hadoop@master hadoop]$ start-yarn.sh
+[hadoop@master hadoop]$ mr-jobhistory-daemon.sh start historyserver
+```
+
+通过jps命令查看启动的Hadoop进程。如果成功启动的话，在master节点上会看到
+```bash
+[hadoop@master hadoop]$ jps
+2200 SecondaryNameNode
+2630 JobHistoryServer
+2345 ResourceManager
+2027 NameNode
+2706 Jps
+```
+在slave1节点上会看到
+```bash
+[hadoop@slave1 hadoop]$ jps
+2003 Jps
+1783 DataNode
+1893 NodeManager
+```
+
+*另外，还要在master节点上查看DataNode是否正常启动，如果Live datanodes为0，则说明集群启动master和slave之间的资源同步有问题。Live datanodes表示集群中存活的DataNode，每个DataNode对应一个slave节点。*
+
+```bash
+[hadoop@master hadoop]$ hdfs dfsadmin -report
+...
+-------------------------------------------------
+Live datanodes (1):
+
+Name: 172.17.196.193:50010 (slave1)
+Hostname: slave1
+Decommission Status : Normal
+```
+
+*说明；关闭Hadoop集群的方法如下：*
+
+```bash
+[hadoop@master hadoop]$ mr-jobhistory-daemon.sh start historyserver
+[hadoop@master hadoop]$ start-yarn.sh
+[hadoop@master hadoop]$ start-dfs.sh
+```
+
+5.页面查看Hadoop系统状态
+
+在浏览器中输入http://<IP>:50070/即可，这里的<IP>是你部署Hadoop的Linux主机的IP地址。
+
+当然，也可以通过域名访问该页面，[http://master:50070/](http://master:50070/)。不过通过域名访问的话，需要在浏览器所在PC上增加hosts配置。对于Windows 7系统的话，对应的配置文件为：`C:\Windows\System32\drivers\etc\hosts`，在该文件的最后增加下面这一行即可。
+
+```
+<IP> master
+```
+
+其中，<IP>为部署Hadoop的Linux主机的IP地址。
+
+
 ### 参考资料
 
 - [安装本地模式和伪分布模式Hadoop](http://www.powerxing.com/install-hadoop-in-centos/)("安装Java环境"一节不用看，不推荐使用openjdk）

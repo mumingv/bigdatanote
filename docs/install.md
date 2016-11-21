@@ -839,8 +839,8 @@ root@slave1 password:  # 输入slave1节点的root密码
 在master节点上执行
 
 ```bash
-[hadoop@CentOS ~]$ cd /usr/local/hadoop/
-[hadoop@CentOS hadoop]$ ./bin/hdfs namenode -format
+[hadoop@master ~]$ cd /usr/local/hadoop/
+[hadoop@master hadoop]$ hdfs namenode -format
 ```
 
 输出结果中出现`common.Storage: Storage directory /usr/local/hadoop/tmp/dfs/name has been successfully formatted`和`util.ExitUtil: Exiting with status 0`，则表明NameNode格式化成功。命令的具体输出如下：
@@ -975,9 +975,9 @@ Decommission Status : Normal
 *说明；关闭Hadoop集群的方法如下：*
 
 ```bash
-[hadoop@master hadoop]$ mr-jobhistory-daemon.sh start historyserver
-[hadoop@master hadoop]$ start-yarn.sh
-[hadoop@master hadoop]$ start-dfs.sh
+[hadoop@master hadoop]$ mr-jobhistory-daemon.sh stop historyserver
+[hadoop@master hadoop]$ stop-yarn.sh
+[hadoop@master hadoop]$ stop-dfs.sh
 ```
 
 5.页面查看Hadoop系统状态

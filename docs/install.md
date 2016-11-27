@@ -1030,3 +1030,43 @@ Decommission Status : Normal
 - [厦门大学数据库实验室](http://dblab.xmu.edu.cn/)(厦门大学有关大数据的研究资料和教学视频)
 - [设置机器间免密登陆](http://blog.csdn.net/dongwuming/article/details/9705595)
 
+
+## 阿里云新购ECS集群配置
+
+说明：本节是专门针对阿里云的新购机器的集群配置说明，如果已经搭建好集群，请跳过本节的阅读。
+
+前提：master是已有的ECS机器，这些新购的ECS机器只作为备机使用。
+
+### 处理步骤
+
+1.修改所有备机的主机名
+
+参考：[修改主机名](#docs/install#修改主机名)。
+
+2.主机及所有备机上增加IP与主机名的映射
+
+参考：[增加IP地址到主机名的映射](#docs/install#增加IP地址到主机名的映射)。
+
+示例：一台master和两台slave的配置。
+
+```
+[hadoop@master ~]$ cat /etc/hosts
+...
+172.17.0.1 master
+172.17.196.195 slave1
+172.17.196.196 slave2
+```
+
+3.主机及所有备机任意两台间的免密登陆
+
+参考：[设置SSH无密码登陆](#docs/install#设置SSH无密码登陆)。
+
+4.修改Hadoop配置
+
+参考：[修改Hadoop配置](#docs/install#修改Hadoop配置)。
+
+涉及的操作：修改slaves文件，同步Hadoop目录。
+
+5.格式化NameNode & 启动
+
+

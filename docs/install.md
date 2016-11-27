@@ -4,7 +4,7 @@
 
 ## 安装JDK
 
-### 基本概念
+### JDK基本概念
 
 众所周知，整个Hadoop生态都是基于Java语言构建的，所以要安装Hadoop相关的软件，需要先安装Java语言包。
 
@@ -25,7 +25,7 @@ JDK用于开发Java程序，而JRE用于运行Java程序。**如果安装了JDK�
 
 Java编译器(javac)用于编译生成中间文件，而Java虚拟机(jvm)用于将中间文件解释成机器语言，最后编译成功的可执行文件在Java虚拟机(jvm)中运行。
 
-### 安装方法
+### JDK安装方法
 
 对于jdk的安装，通常有下面三种方法，<font color=#FF0000>本文采用的是“方法三”</font>。这里会详细介绍第三种安装方法，另外两种方法只做简要介绍。
 
@@ -99,7 +99,7 @@ $ curl -v -j -k -L -H "Cookie: oraclelicense=accept-securebackup-cookie" http://
 -H [arg] -> headers
 ```
 
-#### 安装jdk
+#### 安装JDK
 
 使用`rpm -ivh`命令进行安装
 
@@ -114,7 +114,7 @@ $ yum list installed | grep jdk
 jdk.x86_64                         2000:1.7.0_80-fcs                   installed
 ```
 
-#### 设置环境变量
+#### 设置JDK环境变量
 
 在系统配置文件`/etc/profile`的末尾增加如下环境变量
 
@@ -133,7 +133,7 @@ export JAVA_HOME JRE_HOME CLASSPATH PATH
 $ source /etc/profile
 ```
 
-#### 确认jdk是否安装成功
+#### 确认JDK是否安装成功
 
 如果已正确安装jdk的话，就可以查看到java的版本，如下：
 
@@ -145,7 +145,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 24.80-b11, mixed mode)
 ```
 
 
-### 参考资料
+### JDK参考资料
 
 - [Apache软件镜像站点](http://mirrors.cnnic.cn/)
 - [清华大学软件镜像站点](https://mirrors.tuna.tsinghua.edu.cn/)（该站点包含了apache软件镜像站点的内容）
@@ -344,7 +344,7 @@ Hadoop单机模式安装成功后，就可以试试下面这个示例体验一�
 
 *<font color="red">说明：在此之前，请先确保已经完成了[单机模式的安装](#docs/install#单机模式安装步骤)。</font>另外，本节所涉及的所有命令均使用hadoop用户执行。*
 
-#### 设置环境变量
+#### 设置环境变量(伪分布)
 
 在系统配置文件`/etc/profile`的末尾增加如下环境变量
 
@@ -367,7 +367,7 @@ export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS
 ```
 
 
-#### 修改Hadoop配置
+#### 修改Hadoop配置(伪分布)
 
 *说明：本节所涉及的配置均在`/usr/local/hadoop/etc/hadoop`目录下。*
 
@@ -613,7 +613,7 @@ Hadoop伪分布式模式安装成功后，就可以试试下面这个示例体�
 
 *本示例使用两台机器作为集群环境，一个作为master节点（IP：172.0.0.1），另一个作为slave节点（IP：172.17.196.192）。*
 
-#### 设置环境变量
+#### 设置环境变量(全分布)
 
 <font color="red">说明：如果您已经在伪分布模式安装的时候设置过，则跳过此步骤，无需重复设置。</font>
 
@@ -637,7 +637,7 @@ export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS
 [hadoop@CentOS ~]$ source /etc/profile
 ```
 
-#### 修改主机名
+#### 修改主机名(全分布)
 
 主机名称保存在配置文件`/etc/hostname`中，使用vim进行修改。
 
@@ -654,7 +654,7 @@ export YARN_HOME HADOOP_COMMON_LIB_NATIVE_DIR HADOOP_OPTS
 ```
 
 
-#### 增加IP地址到主机名的映射
+#### 增加IP地址到主机名的映射(全分布)
 
 IP地址到主机名的映射关系保存在配置文件`/etc/hosts`中，使用vim进行修改。以master节点为例：
 
@@ -697,9 +697,9 @@ rtt min/avg/max/mdev = 1.314/3.178/6.650/2.457 ms
 ```
 
 
-#### 设置SSH无密码登陆
+#### 设置SSH无密码登陆(全分布)
 
-设置方法参考：[设置机器间免密登陆](#docs/install#设置机器间免密登陆)。
+设置方法参考：[设置机器间免密登陆](#docs/install#[单机]设置机器间免密登陆)。
 
 <font color="red">说明：需要在任意两个节点之间都设置SSH无密码登陆。</font>
 
@@ -712,7 +712,7 @@ Last login: Mon Nov 21 11:54:40 2016 from 172.17.0.1
 ```
 
 
-#### 修改Hadoop配置
+#### 修改Hadoop配置(全分布)
 
 *说明：本节所涉及的配置均在`/usr/local/hadoop/etc/hadoop`目录下。*
 
@@ -840,7 +840,7 @@ nfiguration>
 ```
 
 
-#### 同步Hadoop目录
+#### 同步Hadoop目录(全分布)
 
 *如果之前部署过伪分布模式Hadoop，需要先将之前的目录删除掉。在master执行：*
 
@@ -862,7 +862,7 @@ root@slave1 password:  # 输入slave1节点的root密码
 ```
 
 
-#### 格式化NameNode
+#### 格式化NameNode(全分布)
 
 在master节点上执行
 
@@ -960,7 +960,8 @@ SecurityAuth-hadoop.audit
 ```
 *说明：如果启动失败或者运行过程中出现问题，可以优先到logs目录下查看日志以确认问题的可能原因。*
 
-4.启动Hadoop集群
+
+#### 启动Hadoop集群(全分布)
 
 在master节点上执行
 
@@ -1008,7 +1009,8 @@ Decommission Status : Normal
 [hadoop@master hadoop]$ stop-dfs.sh
 ```
 
-5.页面查看Hadoop系统状态
+
+#### 页面查看Hadoop系统状态(全分布)
 
 在浏览器中输入http://<IP>:50070/即可，这里的<IP>是你部署Hadoop的Linux主机的IP地址。
 
@@ -1021,7 +1023,7 @@ Decommission Status : Normal
 其中，<IP>为部署Hadoop的Linux主机的IP地址。
 
 
-### 参考资料
+### 参考资料(全分布)
 
 - [安装本地模式和伪分布模式Hadoop](http://www.powerxing.com/install-hadoop-in-centos/)("安装Java环境"一节不用看，不推荐使用openjdk）
 - [安装全分布模式Hadoop](http://www.powerxing.com/install-hadoop-cluster/)
@@ -1041,11 +1043,11 @@ Decommission Status : Normal
 
 1.修改所有备机的主机名
 
-参考：[修改主机名](#docs/install#修改主机名)。
+参考：[修改主机名](#docs/install#修改主机名全分布)。
 
 2.主机及所有备机上增加IP与主机名的映射
 
-参考：[增加IP地址到主机名的映射](#docs/install#增加IP地址到主机名的映射)。
+参考：[增加IP地址到主机名的映射](#docs/install#增加IP地址到主机名的映射全分布)。
 
 示例：一台master和两台slave的配置。
 
@@ -1059,14 +1061,19 @@ Decommission Status : Normal
 
 3.主机及所有备机任意两台间的免密登陆
 
-参考：[设置SSH无密码登陆](#docs/install#设置SSH无密码登陆)。
+参考：[设置SSH无密码登陆](#docs/install#设置SSH无密码登陆全分布)。
 
 4.修改Hadoop配置
 
-参考：[修改Hadoop配置](#docs/install#修改Hadoop配置)。
+参考：[修改Hadoop配置](#docs/install#修改Hadoop配置全分布)。
 
 涉及的操作：修改slaves文件，同步Hadoop目录。
 
-5.格式化NameNode & 启动
+5.同步Hadoop目录 & 格式化NameNode & 启动Hadoop集群
 
+参考：[同步Hadoop目录](#docs/install#同步Hadoop目录全分布)。
+
+参考：[格式化NameNode](#docs/install#格式化NameNode全分布)。
+
+参考：[启动Hadoop集群](#docs/install#启动Hadoop集群全分布)。
 

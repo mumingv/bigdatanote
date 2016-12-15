@@ -62,6 +62,25 @@ TaskTracker会定时发送心跳消息给JobTracker，如果JobTracker在一定�
 
 ## 运行Hadoop
 
+说明：如果需在这几种模式之间进行切换，仅仅需要修改配置即可，下面的`hadoop.local`、`hadoop.pseudo`以及`hadoop.fully`分别对应三种不同的模式配置。
+
+```bash
+$ ll /usr/local/hadoop/etc/
+total 12
+lrwxrwxrwx 1 hadoop hadoop   14 Dec 15 22:39 hadoop -> hadoop.pseudo/
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 27 09:59 hadoop.fully
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 20 21:38 hadoop.local
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 20 21:06 hadoop.pseudo
+```
+
+具体切换的方式，仅仅需要修改一下软链接。如：将模式切换为全分布模式。
+
+```bash
+$ cd /usr/local/hadoop/etc/
+$ rm hadoop  # 删除当前软链接
+$ ln -s hadoop.fully/ hadoop  # 新建软链接，指向目标模式的配置目录
+```
+
 ### 本地（单机）模式
 
 示例：[用Hadoop统计单词（单机模式）](#docs/hia_wordcount_standalone)。

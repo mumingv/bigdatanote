@@ -6,15 +6,14 @@
 
 [第2章 初识Hadoop](#docs/hia_02)
 
+[第3章 Hadoop组件](#docs/hia_03)
+
+
 ### 第II部分 实战
+
+[第4章 编写MapReduce基础程序](#docs/hia_04)
 
 
 ### 第III部分 Hadoop也疯狂
-
-
-
-
-
-
 
 

@@ -11,11 +11,13 @@
 ## Hadoop基础
 0. [前言](#README)
 0. [环境安装](#docs/install)
+0. [命令汇总](#docs/hadoop_cmd)
 0. [参考资料](#docs/reference)
 
 
 ## 读书笔记
 - [《Hadoop实战》](#docs/book_hia)
+- [《hadoop-2.5.2 官方手册》](#docs/book_documentation_r2_5_2)
 
 
 ## 附录 

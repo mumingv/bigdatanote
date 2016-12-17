@@ -23,6 +23,50 @@ Usage: hadoop [--config confdir] COMMAND
 Most commands print help when invoked w/o parameters.
 ```
 
+查看某条命令的详细帮助。
+
+```bash
+$ hadoop fs -help
+Usage: hadoop fs [generic options]
+        [-appendToFile <localsrc> ... <dst>]
+        [-cat [-ignoreCrc] <src> ...]
+        [-checksum <src> ...]
+        [-chgrp [-R] GROUP PATH...]
+        [-chmod [-R] <MODE[,MODE]... | OCTALMODE> PATH...]
+        [-chown [-R] [OWNER][:[GROUP]] PATH...]
+        [-copyFromLocal [-f] [-p] <localsrc> ... <dst>]
+        [-copyToLocal [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+        [-count [-q] <path> ...]
+        [-cp [-f] [-p | -p[topax]] <src> ... <dst>]
+        [-createSnapshot <snapshotDir> [<snapshotName>]]
+        [-deleteSnapshot <snapshotDir> <snapshotName>]
+        [-df [-h] [<path> ...]]
+        [-du [-s] [-h] <path> ...]
+        [-expunge]
+        [-get [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+        [-getfacl [-R] <path>]
+        [-getfattr [-R] {-n name | -d} [-e en] <path>]
+        [-getmerge [-nl] <src> <localdst>]
+        [-help [cmd ...]]
+        [-ls [-d] [-h] [-R] [<path> ...]]
+        [-mkdir [-p] <path> ...]
+        [-moveFromLocal <localsrc> ... <dst>]
+        [-moveToLocal <src> <localdst>]
+        [-mv <src> ... <dst>]
+        [-put [-f] [-p] <localsrc> ... <dst>]
+        [-renameSnapshot <snapshotDir> <oldName> <newName>]
+        [-rm [-f] [-r|-R] [-skipTrash] <src> ...]
+        [-rmdir [--ignore-fail-on-non-empty] <dir> ...]
+        [-setfacl [-R] [{-b|-k} {-m|-x <acl_spec>} <path>]|[--set <acl_spec> <path>]]
+        [-setfattr {-n name [-v value] | -x name} <path>]
+        [-setrep [-R] [-w] <rep> <path> ...]
+        [-stat [format] <path> ...]
+        [-tail [-f] <file>]
+        [-test -[defsz] <path>]
+        [-text [-ignoreCrc] <src> ...]
+        [-touchz <path> ...]
+        [-usage [cmd ...]]
+```
 
 ## hadoop version 查看hadoop版本号
 
@@ -39,7 +83,19 @@ This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2
 
 ## hadoop fs 文件系统命令
 
-### 删除目录
+### hadoop fs -rm 删除文件或目录
+
+删除文件
+
+```bash
+$ hadoop fs -rm input/sample.txt
+16/12/17 17:45:17 INFO fs.TrashPolicyDefault: Namenode trash configuration: Deletion interval = 0 minutes, Emptier interval = 0 minutes.
+Deleted input/sample.txt
+```
+
+删除目录
+
+<font color="red">注意：要使用-r参数。</font>
 
 ```bash
 $ hadoop fs -rm -r output

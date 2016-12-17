@@ -11,6 +11,7 @@
 ## Hadoop基础
 0. [前言](#README)
 0. [环境安装](#docs/install)
+0. [参考资料](#docs/reference)
 
 
 ## 读书笔记

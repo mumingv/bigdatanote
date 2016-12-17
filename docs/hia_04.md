@@ -42,6 +42,7 @@
 
 ## 更多资源
 
+- [博客文章：Hadoop Streaming编程](http://dongxicheng.org/mapreduce/hadoop-streaming-programming/)
 
 
 

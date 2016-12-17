@@ -171,6 +171,41 @@ $ hadoop fs -cat output/part-00000
 结果中的第一列的值`1`表示统计的文件行数，第二列的值`2`表示统计的文件单词数。第三列是什么？
 
 
+## How Streaming Works 如何工作
+
+略。
+
+
+## Streaming Command Options 命令选项
+
+hadoop命令格式如下。
+
+```
+$ hadoop command [genericOptions] [streamingOptions]
+```
+
+<font color="red">注意：streaming选项一定要放在通用选项后面，否则会有问题。</font>
+
+streaming选项中有4个必选选项，其他均为可选选项。这4个必选选项为；
+0. -input directoryname or filename
+0. -output directoryname
+0. -mapper executable or JavaClassName
+0. -reducer executable or JavaClassName
+
+
+## Generic Command Options 通用命令选项
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

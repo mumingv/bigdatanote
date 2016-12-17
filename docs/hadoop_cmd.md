@@ -83,6 +83,27 @@ This command was run using /usr/local/hadoop/share/hadoop/common/hadoop-common-2
 
 ## hadoop fs 文件系统命令
 
+### hadoop fs -mkdir 创建目录
+
+创建目录
+
+```bash
+$ hadoop fs -mkdir input
+```
+
+
+### hadoop fs -put 上传文件
+
+示例：将本地文件input/sample.txt上传到HDFS的input目录。
+
+```bash
+$ hadoop fs -put input/sample.txt input/
+[hadoop@master hadoop]$ hadoop fs -ls -R                      
+drwxr-xr-x   - hadoop supergroup          0 2016-12-17 17:50 input
+-rw-r--r--   1 hadoop supergroup         26 2016-12-17 17:50 input/sample.txt
+```
+
+
 ### hadoop fs -rm 删除文件或目录
 
 删除文件

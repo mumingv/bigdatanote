@@ -92,7 +92,7 @@ $ hadoop fs -mkdir input
 ```
 
 
-### hadoop fs -put 上传文件
+### hadoop fs -put 本地文件上传到hdfs
 
 示例：将本地文件input/sample.txt上传到HDFS的input目录。
 
@@ -101,6 +101,15 @@ $ hadoop fs -put input/sample.txt input/
 [hadoop@master hadoop]$ hadoop fs -ls -R                      
 drwxr-xr-x   - hadoop supergroup          0 2016-12-17 17:50 input
 -rw-r--r--   1 hadoop supergroup         26 2016-12-17 17:50 input/sample.txt
+```
+
+
+### hadoop fs -copyToLocal 从hdfs下载文件到本地
+
+示例：下载日志目录0000到本地
+
+```bash
+$ hadoop fs -copyToLocal /app/ssg/nlp/duer/log/boss_message_log_orp/20170817/0000 ./
 ```
 
 

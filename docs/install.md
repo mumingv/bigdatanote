@@ -1099,4 +1099,18 @@ drwxr-xr-x 2 hadoop hadoop 4096 Nov 20  2016 hadoop.local
 drwxr-xr-x 2 hadoop hadoop 4096 Dec 15  2016 hadoop.pseudo
 ```
 
+示例：将模式从伪分布式修改为全分布式
+
+```
+$ pwd
+/usr/local/hadoop/etc
+$ rm hadoop
+$ ln -s hadoop.fully hadoop
+$ ll /usr/local/hadoop/etc/
+lrwxrwxrwx 1 hadoop hadoop   12 Jan 24 16:01 hadoop -> hadoop.fully
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 27  2016 hadoop.fully
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 20  2016 hadoop.local
+drwxr-xr-x 2 hadoop hadoop 4096 Dec 15  2016 hadoop.pseudo
+```
+
 

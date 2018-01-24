@@ -267,7 +267,7 @@ $ chmod 600 ~/.ssh/authorized_keys
 重要说明：<br />
 a. 一定要将authorized_keys文件的权限改为600，否则该文件不会生效，也就无法进行免密登陆。<br />
 b. 机器B需要免密登陆机器A的话，同样在机器A上需要保存机器B的公钥信息。<br />
-c. Hadoop集群中机器两两之间是需要使用ssh进行通信的，所有每台机器都需要加上其他机器的公钥信息。<br />
+c. Hadoop集群中机器两两之间是需要使用ssh进行通信的，所以每台机器都需要加上其他机器的公钥信息。<br />
 </font>
 
 4.使用ssh进行登陆
@@ -296,8 +296,8 @@ $ ls -l /usr/local/src/hadoop*
 
 ```bash
 $ sudo tar -xzf /usr/local/src/hadoop-2.5.2.tar.gz -C /usr/local
-$ sudo mv /usr/local/src/hadoop-2.5.2 /usr/local/src/hadoop
-$ sudo chown -R hadoop:hadoop /usr/local/src/hadoop
+$ sudo mv /usr/local/hadoop-2.5.2 /usr/local/hadoop
+$ sudo chown -R hadoop:hadoop /usr/local/hadoop
 ```
 
 3.检查hadoop是否可用
@@ -1076,4 +1076,27 @@ Decommission Status : Normal
 参考：[格式化NameNode](#docs/install#格式化NameNode全分布)。
 
 参考：[启动Hadoop集群](#docs/install#启动Hadoop集群全分布)。
+
+
+## FAQ
+
+### 
+
+#### Q：如何在不同hadoop版本以及多个模式之间进行切换？
+
+使用软链接进行切换，如下：
+
+```
+$ ll /usr/local/
+lrwxrwxrwx   1 root   root     12 Jan 24 10:20 hadoop -> hadoop-2.5.2
+drwxr-xr-x  15 hadoop hadoop 4096 Jan 24 10:21 hadoop-2.5.2
+```
+```
+$ ll /usr/local/hadoop/etc/
+lrwxrwxrwx 1 hadoop hadoop   12 Jan 24 10:10 hadoop -> hadoop.pseudo
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 27  2016 hadoop.fully
+drwxr-xr-x 2 hadoop hadoop 4096 Nov 20  2016 hadoop.local
+drwxr-xr-x 2 hadoop hadoop 4096 Dec 15  2016 hadoop.pseudo
+```
+
 
